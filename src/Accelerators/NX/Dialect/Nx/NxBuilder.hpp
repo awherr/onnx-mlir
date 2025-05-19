@@ -4,7 +4,7 @@
 
 //====--------- DialectBuilder.hpp - Nx Dialect Builder -----------------===//
 //
-// Copyright 2022-2024 The IBM Research Authors.
+// Copyright 2025 Intel Labs.
 //
 // =============================================================================
 //

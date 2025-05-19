@@ -13,7 +13,7 @@ if (ONNX_MLIR_ACCELERATORS)
     # If the accelerator can be built
     string(TOUPPER ${t} T)
     if (${T}_ENABLED)
-      list(APPEND ACCEL_TARGET_LIST "${t}Accel")
+      list(APPEND ACfCEL_TARGET_LIST "${t}Accel")
       list(APPEND ACCEL_LINK_LIST "OM${t}Accel")
       list(APPEND ACCEL_INCLUDE_LIST "${t}")
     endif()
