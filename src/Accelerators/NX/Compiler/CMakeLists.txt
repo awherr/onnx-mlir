@@ -1,0 +1,38 @@
+add_onnx_mlir_library(OMNXCompilerOptions
+  NXCompilerOptions.cpp
+
+  EXCLUDE_FROM_OM_LIBS
+
+  INCLUDE_DIRS PRIVATE
+  ${NX_SRC_ROOT}
+  ${NX_BIN_ROOT}
+  ${NX_ONNX_MLIR_SRC_ROOT}
+  ${NX_ONNX_MLIR_BIN_ROOT}
+
+  LINK_LIBS PUBLIC
+  OMCompilerOptions
+
+  ACCEL_INCLUDE_DIRS PRIVATE
+  ${NX_ONNX_MLIR_SRC_ROOT}
+  ${NX_ONNX_MLIR_BIN_ROOT}
+  )
+
+add_onnx_mlir_library(OMNXCompilerUtils
+  NXCompilerUtils.cpp
+
+  EXCLUDE_FROM_OM_LIBS
+
+  INCLUDE_DIRS PRIVATE
+  ${NX_SRC_ROOT}
+  ${NX_BIN_ROOT}
+  ${NX_ONNX_MLIR_SRC_ROOT}
+  ${NX_ONNX_MLIR_BIN_ROOT}
+
+  LINK_LIBS PUBLIC
+  OMNXCompilerOptions
+  OMCompilerPasses
+
+  ACCEL_INCLUDE_DIRS PRIVATE
+  ${NX_ONNX_MLIR_SRC_ROOT}
+  ${NX_ONNX_MLIR_BIN_ROOT}
+  )
