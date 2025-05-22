@@ -394,6 +394,13 @@ def get_test_models():
             DYNAMIC_SHAPE: {-1: {-1}},
             CONSTANT_INPUT: {-1},
         },
+        # ==OP== BitwiseNot
+        # ==MIN== 18
+        "test_bitwise_not_2d_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
         # ==OP== Cast
         # ==MIN== 6
         # ==LIM== Cast only between float and double types. Only ppc64le and MacOS platforms support float16. Does not support int4 and uint4.
@@ -480,6 +487,18 @@ def get_test_models():
             CONSTANT_INPUT: {-1},
         },
         "test_ceil_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        # ==OP== Celu
+        # ==MIN== 12
+        "test_celu_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        "test_celu_expanded_cpu": {
             STATIC_SHAPE: {},
             DYNAMIC_SHAPE: {-1: {-1}},
             CONSTANT_INPUT: {-1},
@@ -2328,6 +2347,29 @@ def get_test_models():
             DYNAMIC_SHAPE: {-1: {-1}},
             CONSTANT_INPUT: {-1},
         },
+        # ==OP== QLinearMatMul
+        # ==MIN== 10
+        # ==LIM== Only support i8, ui8 and f32.
+        "test_qlinearmatmul_2D_int8_float32_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        "test_qlinearmatmul_2D_uint8_float32_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        "test_qlinearmatmul_3D_int8_float32_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        "test_qlinearmatmul_3D_uint8_float32_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
         # ==OP== Range
         # ==MIN== 11
         "test_range_float_type_positive_delta_cpu": {
@@ -2886,6 +2928,18 @@ def get_test_models():
             CONSTANT_INPUT: {-1},
         },
         "test_shape_example_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        # ==OP== Shrink
+        # ==MIN== 9
+        "test_shrink_hard_cpu": {
+            STATIC_SHAPE: {},
+            DYNAMIC_SHAPE: {-1: {-1}},
+            CONSTANT_INPUT: {-1},
+        },
+        "test_shrink_soft_cpu": {
             STATIC_SHAPE: {},
             DYNAMIC_SHAPE: {-1: {-1}},
             CONSTANT_INPUT: {-1},

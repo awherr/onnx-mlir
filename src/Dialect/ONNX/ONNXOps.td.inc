@@ -1034,6 +1034,7 @@ def ONNXCenterCropPadOp:ONNX_Op<"CenterCropPad",
 
 def ONNXClipOp:ONNX_Op<"Clip",
   [Pure, DeclareOpInterfaceMethods<ShapeInferenceOpInterface>, DeclareOpInterfaceMethods<ShapeHelperOpInterface>]> {
+  let hasCanonicalizer = 1;
   let summary = "ONNX Clip operation";
   let description = [{
   Clip operator limits the given input within an interval. The interval is
@@ -1244,6 +1245,7 @@ def ONNXCompressOp:ONNX_Op<"Compress",
 
 def ONNXConcatOp:ONNX_Op<"Concat",
   [Pure, DeclareOpInterfaceMethods<ShapeInferenceOpInterface>, DeclareOpInterfaceMethods<ShapeHelperOpInterface>]> {
+  let hasCanonicalizer = 1;
   let summary = "ONNX Concat operation";
   let description = [{
   Concatenate a list of tensors into a single tensor. All input tensors must have the same shape, except for the dimension size of the axis to concatenate on.
@@ -3159,6 +3161,7 @@ def ONNXGridSampleV16Op:ONNX_Op<"GridSampleV16",
 
 def ONNXGroupNormalizationOp:ONNX_Op<"GroupNormalization",
   [Pure, DeclareOpInterfaceMethods<ShapeInferenceOpInterface>, DeclareOpInterfaceMethods<ShapeHelperOpInterface>]> {
+  let hasCanonicalizer = 1;
   let summary = "ONNX GroupNormalization operation";
   let description = [{
   A GroupNormalization function. Carries out group normalization as described in
@@ -3215,6 +3218,7 @@ def ONNXGroupNormalizationOp:ONNX_Op<"GroupNormalization",
 
 def ONNXGroupNormalizationV18Op:ONNX_Op<"GroupNormalizationV18",
   [Pure, DeclareOpInterfaceMethods<ShapeInferenceOpInterface>, DeclareOpInterfaceMethods<ShapeHelperOpInterface>]> {
+  let hasCanonicalizer = 1;
   let summary = "ONNX GroupNormalization operation";
   let description = [{
   A GroupNormalization function. Carries out group normalization as described in
@@ -3503,6 +3507,7 @@ def ONNXIfOp:ONNX_Op<"If",
 
 def ONNXInstanceNormalizationOp:ONNX_Op<"InstanceNormalization",
   [Pure, DeclareOpInterfaceMethods<ShapeInferenceOpInterface>, DeclareOpInterfaceMethods<ShapeHelperOpInterface>]> {
+  let hasCanonicalizer = 1;
   let summary = "ONNX InstanceNormalization operation";
   let description = [{
   Carries out instance normalization as described in the paper

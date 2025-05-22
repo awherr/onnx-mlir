@@ -13,6 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Support/Debug.h"
+#include "llvm/TargetParser/Host.h"
 
 #include "ExternalUtil.hpp"
 #include "onnx-mlir/Compiler/OMCompilerRuntimeTypes.h"
@@ -48,6 +49,7 @@ bool enableKrnlBufferReuse;                            // common for both
 bool enableSafeCodeGen;                                // common for both
 bool disableMemRefPrefetch;                            // common for both
 uint64_t compilationNumThreads;                        // common for both
+std::vector<std::string> decomposeOpsInONNX;           // common for both
 EmissionTargetType emissionTarget;                     // onnx-mlir only
 bool invokeOnnxVersionConverter;                       // onnx-mlir only
 bool preserveLocations;                                // onnx-mlir only
@@ -173,7 +175,8 @@ static llvm::cl::opt<float, true> nnpaEpsilonOpt("nnpa-epsilon",
     llvm::cl::cat(OnnxMlirCommonOptions), llvm::cl::init(1e-5));
 
 static llvm::cl::opt<std::string, true> marchOpt("march",
-    llvm::cl::desc("Target architecture to generate code for."),
+    llvm::cl::desc("Target architecture to generate code for.\n"
+                   "--march=native will use the host's archituecture"),
     llvm::cl::value_desc("Target a specific architecture type"),
     llvm::cl::location(march), llvm::cl::cat(OnnxMlirCommonOptions),
     llvm::cl::ValueRequired);
@@ -263,6 +266,15 @@ static llvm::cl::opt<bool, true> disableMemRefPrefetchOpt(
                    "Set to 'true' if you want to disable prefetch."),
     llvm::cl::location(disableMemRefPrefetch), llvm::cl::init(false),
     llvm::cl::cat(OnnxMlirCommonOptions));
+
+static llvm::cl::list<std::string, std::vector<std::string>>
+    decomposeOpsInONNXOpt("decompose-op-in-onnx",
+        llvm::cl::desc("Specify ONNX operations to decompose.\n"
+                       "Supported Ops - HardSwish"),
+        llvm::cl::value_desc("ONNX operation to decompose"),
+        llvm::cl::location(decomposeOpsInONNX),
+        llvm::cl::cat(OnnxMlirCommonOptions), llvm::cl::CommaSeparated,
+        llvm::cl::ZeroOrMore);
 
 static llvm::cl::opt<bool, true> disableRecomposeOptionOpt("disable-recompose",
     llvm::cl::desc("Disable recomposition of ONNX operations."),
@@ -711,8 +723,22 @@ static llvm::cl::opt<bool, true> enable_bound_check("enable-bound-check",
     llvm::cl::location(enableBoundCheck), llvm::cl::init(false),
     llvm::cl::cat(OnnxMlirOptions));
 
+/*
+  How to use the optional optimization for testing.
+
+  #include "src/Compiler/CompilerOptions.hpp"
+
+  if (debugTestCompilerOpt) {
+    fprintf(stderr, "use new optimization");
+    // invoke optimization.
+  }
+
+  And to invoke on the command option (Debug mode only).
+
+  onnx-mlir -test-compiler-opt
+*/
 #if defined(_DEBUG)
-// Option only available in debug mode: set using command options.
+
 static llvm::cl::opt<bool, true> test_compiler_opt("test-compiler-opt",
     llvm::cl::desc(
         "Help compiler writers test a new (small) optimization. When false, "
@@ -900,6 +926,10 @@ std::string getTargetArchOption(bool forLLVMToolchain) {
     int64_t zArchNum = getZArchNum(march, mcpu);
     if (zArchNum != -1)
       return "--march=systemz";
+    // On mac, llc --version seem to want aarch64 or arm64.
+    if (march == "apple-m1" || march == "apple-m2" || march == "apple-m3" ||
+        march == "apple-m4")
+      return "--march=arm64";
   }
   return (march != "") ? "--march=" + march : "";
 }
@@ -1387,8 +1417,16 @@ void initCompilerConfig() {
     setLLVMOption(getLLVMOption() + " --enable-unsafe-fp-math");
   }
 
+<<<<<<< HEAD
   if (march == "z17")
     march = "arch15";
+=======
+  if (march == "native") {
+    march = std::string(llvm::sys::getHostCPUName());
+    if (VerboseOutput)
+      llvm::outs() << "Native machine set as \"" << march << "\"\n";
+  }
+>>>>>>> 269435435e41e61dcf595836ac9a4f42e43a6926
 }
 
 } // namespace onnx_mlir

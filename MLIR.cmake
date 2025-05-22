@@ -119,6 +119,8 @@ function(add_onnx_mlir_dialect dialect dialect_name)
   mlir_tablegen(${dialect}Types.cpp.inc -gen-typedef-defs -typedefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
   mlir_tablegen(${dialect}Attributes.hpp.inc -gen-attrdef-decls -attrdefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
   mlir_tablegen(${dialect}Attributes.cpp.inc -gen-attrdef-defs -attrdefs-dialect=${dialect_name} "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Enums.hpp.inc -gen-enum-decls "-I${ONNX_MLIR_SRC_ROOT}")
+  mlir_tablegen(${dialect}Enums.cpp.inc -gen-enum-defs "-I${ONNX_MLIR_SRC_ROOT}")
   add_public_tablegen_target(OM${dialect}IncGen)
 endfunction()
 

@@ -24,6 +24,9 @@
 #include "src/Interface/SpecializedKernelOpInterface.hpp"
 #include "src/Accelerators/NX/Dialect/Nx/NxDialect.hpp.inc"
 
+#define GET_ATTRDEF_CLASSES
+#include "src/Accelerators/NX/Dialect/Nx/NxAttributes.hpp.inc"
+
 #define GET_OP_CLASSES
 #include "src/Accelerators/NX/Dialect/Nx/NxOps.hpp.inc"
 #endif

@@ -32,7 +32,7 @@ Onnx-mlir currently supports ONNX operations targeting up to opset 22. Limitatio
 | **Binarizer** |none | | | |
 | **BitShift** |none | | | |
 | **BitwiseAnd** |18 - * | | |
-| **BitwiseNot** |none | | | |
+| **BitwiseNot** |18 - * | Only supports signed integers | | 
 | **BitwiseOr** |18 - * | | |
 | **BitwiseXor** |18 - * | | |
 | **BlackmanWindow** |none | | | |
@@ -41,7 +41,7 @@ Onnx-mlir currently supports ONNX operations targeting up to opset 22. Limitatio
 | **CastMap** |none | | | |
 | **CategoryMapper** |none | | | |
 | **Ceil** |6 - * | | |
-| **Celu** |none | | | |
+| **Celu** |12 - * | | | |
 | **CenterCropPad** |none | | | |
 | **Clip** |6 - * |No support for short integers. | |
 | **Col2Im** |none | | | |
@@ -92,7 +92,7 @@ Onnx-mlir currently supports ONNX operations targeting up to opset 22. Limitatio
 | **HammingWindow** |none | | | |
 | **HannWindow** |none | | | |
 | **HardSigmoid** |6 - * | | |
-| **HardSwish** |none | | | |
+| **HardSwish** |14 - * | | | |
 | **Hardmax** |6 - * | | |
 | **Identity** |16 - * |Sequence identity not supported. Does not support int4 and uint4. | |
 | **If** |16 - * |Sequence and Optional outputs are not supported. Does not support int4 and uint4. | |
@@ -145,7 +145,7 @@ Onnx-mlir currently supports ONNX operations targeting up to opset 22. Limitatio
 | **Pad** |6 - * |axes input not supported. Does not support int4 and uint4. | |
 | **Pow** |7 - * |No support for power with integer types. | |
 | **QLinearConv** |none | | | |
-| **QLinearMatMul** |none | | | |
+| **QLinearMatMul** |10 - * |Only support i8, ui8 and f32. | |
 | **QuantizeLinear** |10 - * |Does not support per-axis and i8 quantization. Does not support int4 and uint4. | |
 | **RNN** |7 - * |W, B and R must be constants. | |
 | **RandomNormal** |none | | | |
@@ -187,7 +187,7 @@ Onnx-mlir currently supports ONNX operations targeting up to opset 22. Limitatio
 | **SequenceLength** |none | | | |
 | **SequenceMap** |none | | | |
 | **Shape** |15 - * |Does not support start and end attributes. Does not support int4 and uint4. | |
-| **Shrink** |none | | | |
+| **Shrink** |9 - * | | | |
 | **Sigmoid** |6 - * | | |
 | **Sign** |9 - * | | |
 | **Sin** |7 - * | | |
