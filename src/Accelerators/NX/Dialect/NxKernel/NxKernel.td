@@ -54,7 +54,7 @@ def NxKernel_Dialect : Dialect {
 class NxKernel_Attr<string name, list<Trait> traits = []>
 	: BaseLayoutAttr<NxKernel_Dialect, name, traits>;
 
-def NxKernelSpikeEnum : I32EnumAttr<"KernelSpikeType", "a simple enum", [
+def NXKSpikeTypeEnum : I32EnumAttr<"SpikeType", "", [
                                 I32EnumAttrCase<"eq", 0>,
                                 I32EnumAttrCase<"lu", 1>,
                                 I32EnumAttrCase<"ws", 2>,
@@ -66,8 +66,17 @@ def NxKernelSpikeEnum : I32EnumAttr<"KernelSpikeType", "a simple enum", [
                                 I32EnumAttrCase<"z",  8>]> {
   let genSpecializedAttr = 0;
 }
+def NXKSpikeTypeAttr : EnumAttr<NxKernel_Dialect, NXKSpikeTypeEnum, "">;
 
-def NxKernelSpikeEnumAttr : EnumAttr<NxKernel_Dialect, NxKernelSpikeEnum, "enum">;
+def NXKSignModeEnum : I32EnumAttr<"SignMode", "", [
+                     I32EnumAttrCase<"null",  0>,
+                     I32EnumAttrCase<"mixed", 1>,
+                     I32EnumAttrCase<"inhibitory", 2>,
+                     I32EnumAttrCase<"excitatory", 3>]>{
+  let genSpecializedAttr = 0;
+}
+
+def NXKSignModeAttr : EnumAttr<NxKernel_Dialect, NXKSignModeEnum, "">;
 
 def KernelType : Type<CPred<"mlir::isa<nx::KernelType>($_self)">, "kernel type">;
 def ModuleType : Type<CPred<"mlir::isa<nx::ModuleType>($_self)">, "module type">;
@@ -164,7 +173,7 @@ def StringType : Type<CPred<"mlir::isa<nx::StringType>($_self)">, "string type">
 // Require regions to have nx.terminate terminator operation.
 def ImplicitNxKernelTerminator : SingleBlockImplicitTerminator<"NxKernelTerminatorOp">;
 
-def NXKConv : Op<NxKernel_Dialect, "conv", []> {
+def NXKSynapseConv : Op<NxKernel_Dialect, "synapse_conv", []> {
   let summary = "";
   let description = [{}];
 
@@ -172,40 +181,38 @@ def NXKConv : Op<NxKernel_Dialect, "conv", []> {
                        NxTensor_HWCK:$weights,
                        NxTensor_HWCK:$delay,
                        NxTensor_HWCK:$tag,
-                       I32ArrayAttr:$strides, //"[1,1]"
-                       I32ArrayAttr:$padding, //  "[0,0]"
-                       I32ArrayAttr:$dialation, // "[1,1]"
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{1,1}">:$strides,
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{0,0}">:$padding, 
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{1,1}">:$dialation,
                        DefaultValuedAttr<I32Attr, "1">:$group,
                        OptionalAttr<I32Attr>:$num_weight_bits,
                        DefaultValuedAttr<I32Attr, "0">:$num_delay_bits,
                        DefaultValuedAttr<I32Attr, "0">:$num_tag_bits,
                        DefaultValuedAttr<I32Attr, "0">:$weight_exp,
-                       OptionalAttr<I32Attr>:$sign_mode, // needs attrib
-                       OptionalAttr<I32Attr>:$sparse_packing, // needs attrib
-                       OptionalAttr<I32Attr>:$optimize_weights, // needs attrib
+                       OptionalAttr<NXKSignModeAttr>:$sign_mode,
+                       OptionalAttr<I32Attr>:$sparse_packing,
+                       OptionalAttr<I32Attr>:$optimize_weights,
                        DefaultValuedStrAttr<StrAttr, "">:$name
                        );
   let results = (outs KernelType:$output);
   let hasVerifier = 0;
 }
 
-def NXKMaxOp : Op<NxKernel_Dialect, "max", []> {
+def NXKSynapseMaxOp : Op<NxKernel_Dialect, "synapse_max", []> {
   let summary = "";
   let description = [{}];
-
   let arguments = (ins I64ArrayAttr:$shape,
                        I32ArrayAttr:$num_args,
-                       NxKernelSpikeEnum:$out_spike_type
+                       NXKSpikeTypeAttr:$out_spike_type
                        );
   let results = (outs KernelType:$output);
 
   let hasVerifier = 1;
 }
 
-def NXKKernel : Op<NxKernel_Dialect, "conv", []> {
+def NXKSynapseLinear : Op<NxKernel_Dialect, "synapse_linear", []> {
   let summary = "";
   let description = [{}];
-
   let arguments = (ins NxTensor_HWCK:$weights,
                        NxTensor_HWCK:$delay,
                        NxTensor_HWCK:$tag,
@@ -213,10 +220,25 @@ def NXKKernel : Op<NxKernel_Dialect, "conv", []> {
                        DefaultValuedAttr<I32Attr, "0">:$num_delay_bits,
                        DefaultValuedAttr<I32Attr, "0">:$num_tag_bits,
                        DefaultValuedAttr<I32Attr, "0">:$weight_exp,
-                       OptionalAttr<I32Attr>:$sign_mode, // needs attrib
-                       OptionalAttr<I32Attr>:$sparse_packing, // needs attrib
-                       OptionalAttr<I32Attr>:$optimize_weights, // needs attrib
-                       OptionalAttr<I32Attr>:$use_shared_axon, // needs attrib
+                       OptionalAttr<NXKSignModeAttr>:$sign_mode,
+                       OptionalAttr<I32Attr>:$sparse_packing,
+                       OptionalAttr<I32Attr>:$optimize_weights,
+                       OptionalAttr<I32Attr>:$use_shared_axon,
+                       DefaultValuedStrAttr<StrAttr, "">:$name
+                       );
+  let results = (outs KernelType:$output);
+  let hasVerifier = 0;
+}
+
+def NXKSynapsePool : Op<NxKernel_Dialect, "synapse_pool", []> {
+  let summary = "";
+  let description = [{}];
+  let arguments = (ins I64ArrayAttr:$output_shape,
+                       I64ArrayAttr:$kernel_size,
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{1,1}">:$strides, 
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{0,0}">:$padding, 
+                       DefaultValuedOptionalAttr<I32ArrayAttr,"{1,1}">:$dialation,
+                       OptionalAttr<I32Attr>:$sparse_packing,
                        DefaultValuedStrAttr<StrAttr, "">:$name
                        );
   let results = (outs KernelType:$output);
