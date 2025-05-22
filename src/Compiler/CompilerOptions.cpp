@@ -1417,16 +1417,13 @@ void initCompilerConfig() {
     setLLVMOption(getLLVMOption() + " --enable-unsafe-fp-math");
   }
 
-<<<<<<< HEAD
   if (march == "z17")
     march = "arch15";
-=======
-  if (march == "native") {
+  else if (march == "native") {
     march = std::string(llvm::sys::getHostCPUName());
     if (VerboseOutput)
       llvm::outs() << "Native machine set as \"" << march << "\"\n";
   }
->>>>>>> 269435435e41e61dcf595836ac9a4f42e43a6926
 }
 
 } // namespace onnx_mlir
